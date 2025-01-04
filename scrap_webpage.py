@@ -20,6 +20,6 @@ def scrap_webpage(url, class_name, skip, limit):
             i+=1
             if i-skip-1>=limit:
                 break
+        return urls
     else:
         raise Exception(f"Failed to retrieve webpage. Status code: {response.status_code}")
-    return urls
