@@ -6,6 +6,7 @@ headers = {
 }
 
 def scrap_webpage(url, class_name, skip, limit):
+    print(f"Trying to scrap webpage :: url: {url}, class: {class_name}, skip: {skip}, limit: {limit}")
     urls=[]
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -14,12 +15,12 @@ def scrap_webpage(url, class_name, skip, limit):
         i=0
         for element in elements_with_class:
             if i >= skip-1:
-                print(element.get('src'))
                 urls.append(element.get('src'))
             i+=1
             if i-skip-1>=limit:
                 break
-        print(urls)
+        print(f"Scrapped media :: url: {url}, media_link: {urls}")
         return urls
     else:
+        print(f"[error] Failed to retrieve webpage. Status code: {response.status_code}")
         raise Exception(f"Failed to retrieve webpage. Status code: {response.status_code}")
