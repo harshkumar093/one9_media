@@ -19,7 +19,7 @@ def scrap_webpage(url, class_name, skip, limit):
             i+=1
             if i-skip-1>=limit:
                 break
-        print(f"Scrapped media :: url: {url}, media_link: {urls}")
+        print(f"[info] Scrapped media :: url: {url}, media_link: {urls}")
         return urls
     else:
         print(f"[error] Failed to retrieve webpage. Status code: {response.status_code}")
