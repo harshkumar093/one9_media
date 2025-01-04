@@ -12,7 +12,6 @@ def scrap_webpage(url, class_name, skip, limit):
         soup = BeautifulSoup(response.content, "html.parser")
         elements_with_class = soup.find_all(class_=class_name)
         i=0
-        print(len(elements_with_class))
         for element in elements_with_class:
             if i >= skip-1:
                 print(element.get('src'))
@@ -20,6 +19,7 @@ def scrap_webpage(url, class_name, skip, limit):
             i+=1
             if i-skip-1>=limit:
                 break
+        print(urls)
         return urls
     else:
         raise Exception(f"Failed to retrieve webpage. Status code: {response.status_code}")
