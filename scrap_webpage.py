@@ -22,3 +22,4 @@ def scrap_webpage(url, class_name, skip, limit):
                 break
     else:
         raise Exception(f"Failed to retrieve webpage. Status code: {response.status_code}")
+    return urls
