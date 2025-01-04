@@ -13,6 +13,6 @@ def download_media(url, save_path):
             for chunk in response.iter_content(chunk_size=1024):
                 video_file.write(chunk)
 
-        print("Media downloaded successfully! :: download_url: {url}, save_location: {save_path}")
+        print(f"Media downloaded successfully! :: download_url: {url}, save_location: {save_path}")
     else:
         print(f"Failed to download media :: status_code: {response.status_code}")
