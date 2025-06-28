@@ -287,35 +287,30 @@ def add_captions_to_video(video_path, output_path, caption_list):
     print("Video generation complete!")   
     video.close()
 
-if __name__ == "__main__":
-    auto_generate_timestamps = any(item.get('start') is None for item in caption_data)
-    if auto_generate_timestamps:
-        print("Timestamps are missing in the input list. Generating them automatically...")
-        script_as_strings = [item["text"] for item in caption_data]
-
-        word_timestamps = generate_timestamps_from_audio(video_path, whisper_model_size, device_to_use, compute_type)
-        print(word_timestamps)
-        if not word_timestamps:
-            print("Failed to generate timestamps. Exiting.")
-            exit()
-
-        caption_lines_with_times = format_words_into_lines_from_script(word_timestamps, script_as_strings, textCase='upper')
-        if not caption_lines_with_times:
-            print("Failed to format captions from the script. Exiting.")
-            exit()
-
-        final_caption_list = []
-        for i, line in enumerate(caption_lines_with_times):
-            style_to_use = caption_data[i]["style"] if i < len(caption_data) else {}
-            final_caption_list.append({
-                "text": line['text'],
-                "start": line['start'],
-                "end": line['end'],
-                "style": style_to_use
-            })
-            
-    else:
-        print("Timestamps are provided in the input list. Using them directly.")
-        final_caption_list = caption_data
-        
-    add_captions_to_video(video_path, output_path, final_caption_list)
+# if __name__ == "__main__":
+#     auto_generate_timestamps = any(item.get('start') is None for item in caption_data)
+#     if auto_generate_timestamps:
+#         print("Timestamps are missing in the input list. Generating them automatically...")
+#         script_as_strings = [item["text"] for item in caption_data]
+#         word_timestamps = generate_timestamps_from_audio(video_path, whisper_model_size, device_to_use, compute_type)
+#         print(word_timestamps)
+#         if not word_timestamps:
+#             print("Failed to generate timestamps. Exiting.")
+#             exit()
+#         caption_lines_with_times = format_words_into_lines_from_script(word_timestamps, script_as_strings, textCase='upper')
+#         if not caption_lines_with_times:
+#             print("Failed to format captions from the script. Exiting.")
+#             exit()
+#         final_caption_list = []
+#         for i, line in enumerate(caption_lines_with_times):
+#             style_to_use = caption_data[i]["style"] if i < len(caption_data) else {}
+#             final_caption_list.append({
+#                 "text": line['text'],
+#                 "start": line['start'],
+#                 "end": line['end'],
+#                 "style": style_to_use
+#             })
+#     else:
+#         print("Timestamps are provided in the input list. Using them directly.")
+#         final_caption_list = caption_data
+#     add_captions_to_video(video_path, output_path, final_caption_list)
