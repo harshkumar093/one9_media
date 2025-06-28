@@ -6,7 +6,7 @@ def clean_sentences(sentences, textCase='normal'):
         print(f"Cleaning sentence: {sentence}")
         words = re.sub(r'—', ' ', sentence)
         words = re.sub(r'-', ' ', words)
-        words = re.sub(r'[^a-zA-Z\s\']', '', words)
+        words = re.sub(r'[^a-zA-Z0-9\s\']', '', words)
         words = re.sub(r'\s+', ' ', words).strip()
         if textCase == 'lower':
             words = words.lower()
