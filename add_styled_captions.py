@@ -173,7 +173,7 @@ def create_styled_text_image_clip(text, duration, start_time, video_width, video
             font_path = ImageFont.truetype("C:/Windows/Fonts/Arial.ttf", style_settings["font_size"])
         except IOError:
             font_path = ImageFont.load_default()
-            style_settings["font_size"] = 16
+            # style_settings["font_size"] = 16
     if font_path is None:
         print("Error: No font could be loaded. Returning an empty clip.")
         return ImageClip(np.zeros((video_height, video_width, 3)), duration=duration).set_start(start_time).set_position((0,0))
