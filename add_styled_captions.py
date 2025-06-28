@@ -2,8 +2,8 @@ import os
 from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from generate_timestamp import generate_timestamps_from_audio
-from format_word_to_lines import format_words_into_lines_from_script
+# from generate_timestamp import generate_timestamps_from_audio
+# from format_word_to_lines import format_words_into_lines_from_script
 
 video_path = "video_0.mp4"
 output_path = "output_video_with_styled_captions_pillow.mp4"
