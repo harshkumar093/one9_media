@@ -1,21 +1,22 @@
-import os
+import re
 from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 # from generate_timestamp import generate_timestamps_from_audio
 # from format_word_to_lines import format_words_into_lines_from_script
+import inflect
 
 video_path = "video_0.mp4"
-output_path = "output_video_with_styled_captions_pillow.mp4"
+output_path = "output_video_0.mp4"
 
 caption_data = [
     {
-        "text": "In the bustling streets of Montrose Emily—a spirited travel photographer—was rushing to catch a train.",
+        "text": "Shefali jariwala, who became famous from the song kaanta laga and the show bigg boss, has died of a heart attack.",
         "start": None,
         "end": None,
         "style": {
             "position": "center",
-            "font_size": 65,
+            "font_size": 50,
             "text_color": "yellow",
             "stroke_color": "black",
             "stroke_width": 2,
@@ -26,92 +27,31 @@ caption_data = [
         }
     },
     {
-        "text": "Her camera bag dangled precariously as she weaved through the crowd.",
+        "text": " She was forty-two years old.",
         "start": None,
         "end": None,
         "style": {
             "position": "center",
-            "font_size": 80,
-            "text_color": "cyan",
-            "stroke_color": "magenta",
+            "font_size": 50,
+            "text_color": "yellow",
+            "stroke_color": "black",
             "stroke_width": 3,
             "shadow_enabled": False, # No shadow for this line
             "font_family": "arial.ttf"
         }
     },
     {
-        "text": "Suddenly she collided with someone and her camera tumbled out of her hands.",
+        "text": " Fans and stars shared their sadness online.",
         "start": None,
         "end": None,
         "style": {
             "position": "center",
-            "font_size": 55,
-            "text_color": "white",
-            "stroke_color": "blue",
+            "font_size": 50,
+            "text_color": "yellow",
+            "stroke_color": "black",
             "stroke_width": 1,
             "shadow_enabled": True,
             "shadow_offset": (2, 2),
-            "shadow_color": (0, 0, 0),
-            "font_family": "arial.ttf"
-        }
-    },
-    {
-        "text": "A stranger caught the camera just in time.",
-        "start": None,
-        "end": None,
-        "style": {
-            "position": "center",
-            "font_size": 55,
-            "text_color": "lime",
-            "stroke_color": "darkgreen",
-            "stroke_width": 1.5,
-            "shadow_enabled": True,
-            "shadow_offset": (3, 3),
-            "shadow_color": (0, 0, 0),
-            "font_family": "arial.ttf"
-        }
-    },{
-        "text": "He was tall with a rugged charm and a backpack slung over one shoulder.",
-        "start": None,
-        "end": None,
-        "style": {
-            "position": "center",
-            "font_size": 80,
-            "text_color": "cyan",
-            "stroke_color": "magenta",
-            "stroke_width": 3,
-            "shadow_enabled": False, # No shadow for this line
-            "font_family": "arial.ttf"
-        }
-    },
-    {
-        "text": "They locked eyes for a brief moment before Emily hurried aboard the train thinking she'd never see him again.",
-        "start": None,
-        "end": None,
-        "style": {
-            "position": "center",
-            "font_size": 55,
-            "text_color": "white",
-            "stroke_color": "blue",
-            "stroke_width": 1,
-            "shadow_enabled": True,
-            "shadow_offset": (2, 2),
-            "shadow_color": (0, 0, 0),
-            "font_family": "arial.ttf"
-        }
-    },
-    {
-        "text": "Little did she know fate had other plans.",
-        "start": None,
-        "end": None,
-        "style": {
-            "position": "center",
-            "font_size": 55,
-            "text_color": "lime",
-            "stroke_color": "darkgreen",
-            "stroke_width": 1.5,
-            "shadow_enabled": True,
-            "shadow_offset": (3, 3),
             "shadow_color": (0, 0, 0),
             "font_family": "arial.ttf"
         }
@@ -122,6 +62,20 @@ whisper_model_size = "base"
 device_to_use = "cpu"
 compute_type = "int8"
 
+
+p = inflect.engine()
+def normalize_script_for_tts(script_lines):
+    cleaned_script = []
+    for line in script_lines:
+        line = re.sub(r'^(\d+)\.', lambda m: p.number_to_words(m.group(1)).capitalize() + '.', line.strip())
+        line = re.sub(r'(\s)(\d+)\.', lambda m: ' ' + p.number_to_words(m.group(2)) + '.', line)
+        line = re.sub(r'\b(\d{1,3}(?:,\d{3})+)\b', lambda m: p.number_to_words(m.group(1).replace(',', '')).replace(',', ''), line)
+        line = re.sub(r'\b\d+\b', lambda m: p.number_to_words(m.group()).replace(',', ''), line)
+        line = re.sub(r'\.{2,}', '.', line)
+        line = re.sub(r'\s{2,}', ' ', line)
+        line = '. '.join(s.strip().capitalize() for s in line.split('.'))
+        cleaned_script.append(line.strip())
+    return cleaned_script
 
 def get_position_coordinates(position_key, video_width, video_height, text_width, text_height):
     print(f"Calculating position for '{position_key}' with video size {video_width}x{video_height} and text size {text_width}x{text_height}")
@@ -297,7 +251,17 @@ def add_captions_to_video(video_path, output_path, caption_list):
 #         if not word_timestamps:
 #             print("Failed to generate timestamps. Exiting.")
 #             exit()
-#         caption_lines_with_times = format_words_into_lines_from_script(word_timestamps, script_as_strings, textCase='upper')
+#         normalized_word_timestamps = []
+#         for word in word_timestamps:
+#             if 'text' in word and 'start' in word and 'end' in word:
+#                 normalized_word_timestamps.append({
+#                     "text": normalize_script_for_tts([word['text']])[0],
+#                     "start": word['start'],
+#                     "end": word['end']
+#                 })
+#         print("=========================")
+#         print(normalized_word_timestamps)
+#         caption_lines_with_times = format_words_into_lines_from_script(normalized_word_timestamps, script_as_strings, textCase='upper')
 #         if not caption_lines_with_times:
 #             print("Failed to format captions from the script. Exiting.")
 #             exit()
