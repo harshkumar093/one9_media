@@ -40,7 +40,7 @@ def format_words_into_lines_from_script(words, script_lines, textCase='normal'):
             if word_index < len(words):
                 similarity = fuzz.ratio(script_words[i].lower(), words[word_index]['text'].lower())
                 print(similarity, script_words[i].lower(), words[word_index]['text'].lower())
-                if similarity > 60:
+                if similarity >= 50:
                     if line_start_time is None:
                         line_start_time = words[word_index]['start']
                     line_end_time = words[word_index]['end']
