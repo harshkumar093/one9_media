@@ -1,20 +1,14 @@
-import wave
-import struct
+from pydub import AudioSegment
+import imageio_ffmpeg
+import os
 
-def generate_silence_wav(seconds=5, filename="silence.wav", sample_rate=44100):
-    num_samples = seconds * sample_rate
-    amplitude = 0  # silence
-    nchannels = 1
-    sampwidth = 2  # bytes per sample
-    framerate = sample_rate
+# Set pydub's ffmpeg path to bundled version
+AudioSegment.converter = imageio_ffmpeg.get_ffmpeg_exe()
 
-    with wave.open(filename, 'w') as wf:
-        wf.setnchannels(nchannels)
-        wf.setsampwidth(sampwidth)
-        wf.setframerate(framerate)
-        for _ in range(num_samples):
-            wf.writeframes(struct.pack('<h', amplitude))
+def generate_silence_mp3(seconds=5, filename="silence.mp3"):
+    # Generate silent audio
+    silence = AudioSegment.silent(duration=seconds * 1000)  # milliseconds
 
-    print(f"✅ Created silent WAV file: {filename} ({seconds} seconds)")
-
-generate_silence_wav(seconds=5, filename="silence.wav")
+    # Export to MP3
+    silence.export(filename, format="mp3")
+    print(f"✅ Silent MP3 created: {filename} ({seconds} seconds)")
